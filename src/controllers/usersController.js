@@ -151,6 +151,8 @@ const loginUser = async (req, res) => {
     }
 
     const result = await userModel.loginUser(email, password);
+    console.log("result");
+    console.log(result);
 
     if (result) {
       res.status(200).json({

@@ -1,5 +1,6 @@
 const mysql = require('mysql2/promise');
-const bcrypt = require('bcrypt');
+//const bcrypt = require('bcrypt');
+const argon2 = require('argon2');
 const dotenv = require('dotenv');
 // userModel.js
 const jwt = require('jsonwebtoken');
@@ -25,10 +26,15 @@ const createUser = async (userData) => {
   
     // Generar un salt (valor aleatorio) para la contraseña
     const saltRounds = 10;
-    const salt = await bcrypt.genSalt(saltRounds);
+    //const salt = await bcrypt.genSalt(saltRounds);
   
     // Encriptar la contraseña con el salt
-    const hashedPassword = await bcrypt.hash(password, salt);
+    //const hashedPassword = await bcrypt.hash(password, salt);
+    const hashedPassword = await argon2.hash(password);
+    /*const hashedPassword = hashPassword(password)
+    .then((hashedPassword) => {
+      console.log('Contraseña hasheada:', hashedPassword);
+    });*/
   
     // Asegúrate de que estas variables coincidan con los campos en tu base de datos
     const query = 'INSERT INTO users (NameUser, EmailUser, PasswordUser, RoleUser) VALUES (?, ?, ?, ?)';
@@ -53,6 +59,16 @@ const getAllUsers = async () => {
   }
 };
 
+const getAdmin = async () => {
+  const query = "SELECT * FROM users WHERE RoleUser='Admin' AND IsActiveUser=1 LIMIT 1";
+  try {
+    const [users] = await pool.query(query);
+    return users[0].EmailUser;
+  } catch (error) {
+    throw error;
+  }
+};
+
 const getUserById = async (userId) => {
   const query = 'SELECT * FROM users WHERE IdUser = ?';
   const values = [userId];
@@ -69,9 +85,10 @@ const updateUserById = async (updatedUserData) => {
   const { name, email, password, role, userId } = updatedUserData;
   // Generar un salt (valor aleatorio) para la contraseña
   const saltRounds = 10;
-  const salt = await bcrypt.genSalt(saltRounds);
+ //const salt = await bcrypt.genSalt(saltRounds);
   // Encriptar la contraseña con el salt
-  const hashedPassword = await bcrypt.hash(password, salt);
+  const hashedPassword = await argon2.hash(password);
+  //const hashedPassword = await bcrypt.hash(password, salt);
   const query = 'UPDATE users SET NameUser = ?, EmailUser = ?, PasswordUser = ?, RoleUser = ? WHERE IdUser = ?';
   const values = [name, email, hashedPassword, role, userId];
 
@@ -107,11 +124,11 @@ const loginUser = async (email, password) => {
       return null; // Usuario no encontrado
     }
 
-    const passwordMatch = await bcrypt.compare(password, user.PasswordUser);
+    //const passwordMatch = await bcrypt.compare(password, user.PasswordUser);
 
-    if (passwordMatch) {
-
-      
+    const passwordMatch = await argon2.hash(password);
+    
+    if (passwordMatch) {      
       // Generar un token con la información del usuario (puedes personalizar la información incluida en el token)
       const token = jwt.sign({ userId: user.IdUser, email: user.EmailUser, role: user.RoleUser }, process.env.JWT_SECRET, { expiresIn: '1h' });
       // Solo incluir los campos deseados en la respuesta
@@ -130,13 +147,15 @@ const loginUser = async (email, password) => {
   }
 };
 
+
 module.exports = {
   createUser,
   getAllUsers,
   getUserById,
   updateUserById,
   deleteUserById,
-  loginUser
+  loginUser,
+  getAdmin
 };
 
 

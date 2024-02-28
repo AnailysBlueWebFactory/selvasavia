@@ -1,7 +1,25 @@
 // Import models
 const callModel = require('../models/callsModel');
+const userModel = require('../models/userModel');
 // Import nodemailer
 const nodemailer = require('nodemailer');
+const path = require('path');
+const slugify = require('slugify');
+
+const getAdmin = async (req, res) => {
+  try {
+    const users = await userModel.getAdmin();
+    res.status(200).json({
+        "status": "success",
+        "users": users,
+        "message": "Lista de usuarios exitosamente",
+        "code": 200,
+        "endpoint": "/users/getAllUsers"
+      });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
 
 const createCall = async (req, res) => {
     try {
@@ -33,11 +51,12 @@ const createCall = async (req, res) => {
   const callId = await callModel.createCall(req.body);
 
   // After successfully creating the call record, send an email
-  const emailSubject = 'Convocation Created Successfully';
-  const emailBody = `Your convocation with ID ${callId} has been created successfully.`;
-
+  const emailSubject = 'Nueva solicitud de convocatoria recibida';
+  const emailBody = `¡En hora buena! Acabamos de recibir una solicitud para una convocatoria en SelvaSavia con el ID  ${callId} para ser procesada.`;
+  const emailAdmin = await userModel.getAdmin();
+  console.log("emailAdmin: "+emailAdmin);
   // Replace 'call.emailCall' with the actual email address field from your call record
-  //await sendEmail(emailCall, emailSubject, emailBody);
+ await sendEmail(emailAdmin, emailSubject, emailBody);
       res.status(201).json({
         "status": "success",
         "data": {
@@ -66,10 +85,11 @@ const createCall = async (req, res) => {
         // Si no se proporciona el estado, obtener todas las convocatorias
         calls = await callModel.getAllCalls();
       }
+      
       res.status(200).json({
           "status": "success",
           "calls": calls,
-          "message": "Lista de usuarios exitosamente",
+          "message": "Lista de convocatorias obtenida exitosamente",
           "code": 200,
           "endpoint": "/calls/getAllCalls"
         });
@@ -87,7 +107,7 @@ const createCall = async (req, res) => {
       res.status(200).json({
         "status": "success",
         "call": call,
-        "message": "Informacion completa encontrada de la convocatoria con id  "+call.CallId+"",
+        "message": "Informacion completa encontrada de la convocatoria con id  "+call.callId+"",
         "code": 200,
         "endpoint": "/calls/getCallById"
       });
@@ -137,9 +157,9 @@ const updateStatusCallById = async (req, res) => {
     try {
       // Create a nodemailer transporter for SMTP
       const transporter = nodemailer.createTransport({
-        host: 'your-smtp-host', // Replace with your SMTP server host
-        port: 587, // Replace with your SMTP server port
-        secure: false, // Set to true if your SMTP server requires a secure connection
+        host: 'smtp.zoho.com', // Replace with your SMTP server host
+        port: 465 , // Replace with your SMTP server port
+        secure: true, // Set to true if your SMTP server requires a secure connection
         auth: {
           user: 'info@selvasavia.life', // Replace with your email address
           pass: 'SelvaSav1a2024@', // Replace with your email password or an app-specific password
@@ -161,11 +181,127 @@ const updateStatusCallById = async (req, res) => {
       throw error;
     }
   };
+  const getCallsGroupedByStatus = async (req, res) => {
+    try {
+      // Obtener la lista de convocatorias agrupadas por estado y su cantidad
+      const callsGroupedByStatus = await callModel.getCallsGroupedByStatus();
+  
+      res.status(200).json({
+        status: 'success',
+        data: {
+          callsGroupedByStatus: callsGroupedByStatus.map(({ statusCall, count }) => ({ statusCall, count })),
+          total: callsGroupedByStatus[0].total, // Asumiendo que el total está en la primera posición
+        },
+        message: 'Lista de convocatorias agrupadas por estado exitosamente',
+        code: 200,
+        endpoint: '/calls/getCallsGroupedByStatus',
+      });
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  };
+
+  const insertCallDetails = async (req, res) => {
+    try {
+      const {
+        callId,
+        callhallengeAnalysis,
+        iIdentify3Causes,
+        project3Effects,
+        possibleAlternatives,
+        generalObjective,
+        describe3SpecificObjectives,
+        project3Impacts
+      } = req.body;
+  
+      // Asegúrate de que el callId y al menos uno de los campos estén presentes
+      if (!callId || (!callhallengeAnalysis && iIdentify3Causes && project3Effects &&
+        possibleAlternatives && !generalObjective && describe3SpecificObjectives && !project3Impacts)) {
+        return res.status(400).json({
+          status: 'error',
+          message: 'Se requiere el ID de la convocatoria (callId) y al menos uno de los campos del detalle',
+          code: 400,
+          endpoint: '/calls/insertCallDetails'
+        });
+      }
+  
+      // Objeto con los campos a insertar
+      const detailsData = {
+        callhallengeAnalysis,
+        iIdentify3Causes,
+        project3Effects,
+        possibleAlternatives,
+        generalObjective,
+        describe3SpecificObjectives,
+        project3Impacts
+      };
+  
+      // Llama al modelo para realizar la inserción en la base de datos
+      const result = await callModel.insertCallDetails(callId, detailsData);
+  
+      res.status(201).json({
+        status: 'success',
+        message: 'Detalles de la convocatoria insertados exitosamente. Formulario3',
+        code: 201,
+        endpoint: '/calls/insertCallDetails'
+      });
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  };
+
+  // Función para actualizar la publicación de una convocatoria
+const updatePublicationById = async (req, res) => {
+  try {
+    const { callId, publicationTitle, publicationDetail } = req.body;
+const publicationImage = req.file ? req.file : null;
+
+// Verifica si todos los parámetros necesarios están definidos
+if (!callId || !publicationTitle || !publicationDetail || !publicationImage) {
+  return res.status(400).json({
+    status: 'error',
+    message: 'Se requieren los campos callId, PublicationTitle, PublicationDetail y PublicationImage',
+    code: 400
+  });
+}
+      // Utilizar slugify para generar un nombre de archivo amigable
+   //const nombreArchivoAmigable = slugify(publicationImage.filename, { replacement: '_', lower: true });
+     // Utilizar slugify para generar un nombre de archivo amigable
+     const nombreArchivo = publicationImage.filename.replace(/\s+/g, '_');
+
+    // Construir ruta absoluta usando path.join
+    const rutaAbsoluta = path.join('../uploads', nombreArchivo);
+
+    const imagePath='uploads/'+nombreArchivo;
+    const updated = await callModel.updatePublicationById({
+      callId,
+      publicationTitle,
+      publicationDetail,
+      imagePath
+    });
+
+    if (updated) {
+      res.status(200).json({
+        status: 'success',
+        message: 'La publicación de la convocatoria ha sido creada exitosamente.',
+        code: 200,
+        endpoint: '/calls/updatePublicationById'
+      });
+    } else {
+      res.status(404).json({ message: 'Convocatoria no encontrada' });
+    }
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
 
 module.exports = {
   createCall,
   getAllCalls,
   getCallById,
   updateStatusCallById,
-  sendEmail
+  sendEmail,
+  getCallsGroupedByStatus,
+  insertCallDetails,
+  updatePublicationById
 };
