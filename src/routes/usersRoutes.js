@@ -22,6 +22,6 @@ router.post('/updateUserById', authenticateToken,usersController.updateUserById)
 router.post('/deleteUserById', authenticateToken,usersController.deleteUserById);
 
 // Login User (No aplica el middleware authenticateToken aquí)
-router.post('/login', usersController.loginUser);
+router.post('/loginUser', usersController.loginUser);
 
 module.exports = router;

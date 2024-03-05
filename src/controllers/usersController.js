@@ -61,10 +61,7 @@ const getUserById = async (req, res) => {
     if (user) {
       res.status(200).json({
         "status": "success",
-        "data": {
-          "user": user,
-          "userId": userId
-        },
+        "data": user,
         "message": "Informacion completa encontrada del userId "+userId+"",
         "code": 200,
         "endpoint": "/users/getUserById"
@@ -149,10 +146,10 @@ const loginUser = async (req, res) => {
         code: 400,
       });
     }
-
+    
     const result = await userModel.loginUser(email, password);
-    console.log("result");
-    console.log(result);
+    /*console.log("result");
+    console.log(result);*/
 
     if (result) {
       res.status(200).json({
