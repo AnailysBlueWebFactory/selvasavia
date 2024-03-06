@@ -172,11 +172,68 @@ const loginUser = async (req, res) => {
   }
 };
 
+const generateAndSendNewPassword  = async (req, res) => {
+  const { userId, userEmail } = req.body;
+
+  try {
+    const newPassword = await userModel.generateNewPassword(userId);
+
+    if (newPassword) {
+      // Envía el nuevo password por correo electrónico al usuario
+      sendEmail(userEmail,"Nuevo Password", newPassword);
+
+      res.status(200).json({
+        status: 'success',
+        message: 'Nueva contraseña generada y enviada al usuario exitosamente.',
+        code: 200,
+        endpoint: '/users/generateAndSendNewPassword',
+      });
+    } else {
+      res.status(404).json({ message: 'Usuario no encontrado' });
+    }
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+// Function to send an email
+const sendEmail = async (to, subject, body) => {
+  try {
+    // Create a nodemailer transporter for SMTP
+    const transporter = nodemailer.createTransport({
+      host: 'smtp.zoho.com', // Replace with your SMTP server host
+      port: 465 , // Replace with your SMTP server port
+      secure: true, // Set to true if your SMTP server requires a secure connection
+      auth: {
+        user: 'info@selvasavia.life', // Replace with your email address
+        pass: 'SelvaSav1a2024@', // Replace with your email password or an app-specific password
+      },
+    });
+
+    const mailOptions = {
+      from: 'info@selvasavia.life', // Replace with your email address
+      to: to,
+      subject: subject,
+      text: body,
+    };
+
+    await transporter.sendMail(mailOptions);
+
+    console.log('Email sent successfully');
+  } catch (error) {
+    console.error('Error sending email:', error.message);
+    throw error;
+  }
+};
+
+
 module.exports = {
   createUser,
   getAllUsers,
   getUserById,
   updateUserById,
   deleteUserById, 
-  loginUser
+  loginUser,
+  generateAndSendNewPassword ,
+  sendEmail 
 };

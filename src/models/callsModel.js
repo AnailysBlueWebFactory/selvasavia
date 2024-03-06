@@ -89,8 +89,9 @@ FROM (
   SELECT 'New' as statusCall, 1 as OrderBy
   UNION SELECT 'Approved', 2
   UNION SELECT 'Rejected', 3
-  UNION SELECT 'Open', 4
-  UNION SELECT 'Closed', 5
+  UNION SELECT 'Publishing', 4
+  UNION SELECT 'Open', 5
+  UNION SELECT 'Closed', 6
 ) s
 LEFT JOIN calls c ON s.statusCall = c.statusCall
 GROUP BY s.statusCall

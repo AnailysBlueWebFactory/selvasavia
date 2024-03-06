@@ -151,6 +151,38 @@ const loginUser = async (email, password) => {
   }
 };
 
+//Recuperar Password
+
+
+
+const generateNewPassword = async (userId) => {
+  const newPassword = generateRandomPassword(); // Implementa tu lógica para generar una nueva contraseña
+  const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+  const query = 'UPDATE users SET passwordUser = ? WHERE idUser = ?';
+  const values = [hashedPassword, userId];
+
+  try {
+    const [result] = await pool.execute(query, values);
+    return result.affectedRows > 0 ? newPassword : null;
+  } catch (error) {
+    throw error;
+  }
+};
+
+const generateRandomPassword = () => {
+  // Implementa tu lógica para generar una contraseña aleatoria
+  // Puede ser una combinación de letras, números, símbolos, etc.
+  // Aquí hay un ejemplo básico:
+  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  const passwordLength = 10;
+  let newPassword = '';
+  for (let i = 0; i < passwordLength; i++) {
+    newPassword += characters.charAt(Math.floor(Math.random() * characters.length));
+  }
+  return newPassword;
+};
+
 
 module.exports = {
   createUser,
@@ -159,7 +191,9 @@ module.exports = {
   updateUserById,
   deleteUserById,
   loginUser,
-  getAdmin
+  getAdmin,
+  generateNewPassword,
+  generateRandomPassword
 };
 
 

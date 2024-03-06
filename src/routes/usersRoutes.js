@@ -24,4 +24,7 @@ router.post('/deleteUserById', authenticateToken,usersController.deleteUserById)
 // Login User (No aplica el middleware authenticateToken aquí)
 router.post('/loginUser', usersController.loginUser);
 
+// Ruta para generar una nueva contraseña, actualizar el password y enviar un correo electrónico
+router.post('/generateAndSendNewPassword', usersController.generateAndSendNewPassword);
+
 module.exports = router;

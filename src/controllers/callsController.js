@@ -55,8 +55,9 @@ const createCall = async (req, res) => {
   const emailBody = `¡En hora buena! Acabamos de recibir una solicitud para una convocatoria en SelvaSavia con el ID  ${callId} para ser procesada.`;
   const emailAdmin = await userModel.getAdmin();
   console.log("emailAdmin: "+emailAdmin);
+  console.log("emailCall: "+emailCall);
   // Replace 'call.emailCall' with the actual email address field from your call record
- await sendEmail(emailAdmin, emailSubject, emailBody);
+ await sendEmail(emailCall, emailSubject, emailBody);
       res.status(201).json({
         "status": "success",
         "data": {
@@ -132,7 +133,7 @@ const updateStatusCallById = async (req, res) => {
     });
   }
 
-    const updated = await callModel.updateStatusCallById(req.body);
+    const updated = await callModel.updatestatusCallById(req.body);
     if (updated) {
       res.status(200).json({
         "status": "success",
@@ -181,6 +182,7 @@ const updateStatusCallById = async (req, res) => {
       throw error;
     }
   };
+  
   const getCallsGroupedByStatus = async (req, res) => {
     try {
       // Obtener la lista de convocatorias agrupadas por estado y su cantidad
