@@ -31,7 +31,7 @@ const createCall = async (callData) => {
   };
 
   const getAllCalls = async () => {
-    const query = 'SELECT * FROM calls';
+    const query = 'SELECT callId,challengeName,challengeLeaderName,cnstitutionOrganization,actorType,emailAddress,phoneNumber,contextDescription,specificProblemDescription,challengeFormula,requiredResources,invitedParticipants,informationSources,observations,statusCall,challengeAnalysis,identify3Causes,project3Effects,possibleAlternatives,describe3SpecificObjectives,project3Impacts,publicationTitle,publicationDetail,publicationImage FROM calls';
   
     try {
       const [calls] = await pool.query(query);
