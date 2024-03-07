@@ -86,7 +86,6 @@ const createCall = async (req, res) => {
         // Si no se proporciona el estado, obtener todas las convocatorias
         calls = await callModel.getAllCalls();
       }
-      
       res.status(200).json({
           "status": "success",
           "calls": calls,

@@ -31,11 +31,13 @@ const createCall = async (callData) => {
   };
 
   const getAllCalls = async () => {
-    const query = 'SELECT callId,challengeName,challengeLeaderName,institutionOrganization,actorType,emailAddress,phoneNumber,contextDescription,specificProblemDescription,challengeFormula,requiredResources,invitedParticipants,informationSources,observations,statusCall,challengeAnalysis,identify3Causes,project3Effects,possibleAlternatives,describe3SpecificObjectives,project3Impacts,publicationTitle,publicationDetail,publicationImage FROM calls';
+    const query = 'SELECT * FROM calls';
   
     try {
       const [calls] = await pool.query(query);
-      return  calls[0];
+       // Imprimir el contenido de calls
+    //console.log("Contenido de calls:", calls);
+      return  calls;
     } catch (error) {
       throw error;
     }
