@@ -130,8 +130,31 @@ const updateStatusCallById = async (req, res) => {
       message: 'Debes definir el nuevo status de la convocatiria id: '+id,
       code: 400
     });
-  }
 
+    
+   }
+  if (status === 'Approved' || status === 'Rejected') {
+      console.log("status: "+status);
+    const nameProjectLeader = await userModel.getDataUserProjectLeader(id,"challengeLeaderName");
+    const emailrojectLeader = await userModel.getDataUserProjectLeader(id,"emailAddress");
+    const randomPassword = await userModel.generateRandomPassword();
+    const userData = {
+      name: nameProjectLeader.challengeLeaderName,
+      email: emailrojectLeader.emailAddress,
+      password: randomPassword,
+      role: 'Project Leader'
+  };
+    const userId = await userModel.createUser(userData);  
+    let emailSubject = 'Convocatoria Aprobada';
+    let emailBody = `Tu Convocatoria ha sido Aprobada`;
+    if (status === 'Rejected' ) {
+       emailSubject = 'Convocatoria Rechazada';
+       emailBody = `Tu Convocatoria ha sido Rechazada`;
+    }
+    console.log("status: "+status);
+    // Replace 'call.emailCall' with the actual email address field from your call record
+    await sendEmail(emailrojectLeader.emailAddress, emailSubject, emailBody);
+  }
     const updated = await callModel.updatestatusCallById(req.body);
     if (updated) {
       res.status(200).json({

@@ -69,6 +69,7 @@ const createCall = async (callData) => {
 
   const updatestatusCallById = async (data) => {
     try {
+      console.log("Has aprobado la solicitud");
       const { status, id } = data;
       const query = "UPDATE calls SET statusCall = ? WHERE CallId = ?";
      

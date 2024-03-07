@@ -27,7 +27,6 @@ const createUser = async (userData) => {
     // Generar un salt (valor aleatorio) para la contraseña
     const saltRounds = 10;
     const salt = await bcrypt.genSalt(saltRounds);
-  
     // Encriptar la contraseña con el salt
     const hashedPassword = await bcrypt.hash(password, salt);
     //const hashedPassword = await argon2.hash(password);
@@ -39,7 +38,6 @@ const createUser = async (userData) => {
     // Asegúrate de que estas variables coincidan con los campos en tu base de datos
     const query = 'INSERT INTO users (nameUser, emailUser, passwordUser, roleUser) VALUES (?, ?, ?, ?)';
     const values = [name, email, hashedPassword, role];
-  
     try {
       const [result] = await pool.query(query, values);
       return result.insertId;
@@ -64,6 +62,26 @@ const getAdmin = async () => {
   try {
     const [users] = await pool.query(query);
     return users[0].emailUser;
+  } catch (error) {
+    throw error;
+  }
+};
+
+const getEmailUserProjectLeader = async (id) => {
+  const query = "SELECT u.emailUser FROM users u JOIN calls c ON u.emailUser = c.emailAddress WHERE c.callId = "+id;
+  try {
+    const [users] = await pool.query(query);
+    return users[0];
+  } catch (error) {
+    throw error;
+  }
+};
+
+const getDataUserProjectLeader = async (id,campo) => {
+  const query = "SELECT "+campo+"  FROM calls  WHERE callId = "+id;
+  try {
+    const [users] = await pool.query(query);
+    return users[0];
   } catch (error) {
     throw error;
   }
@@ -170,17 +188,20 @@ const generateNewPassword = async (userId) => {
   }
 };
 
+
+
 const generateRandomPassword = () => {
-  // Implementa tu lógica para generar una contraseña aleatoria
-  // Puede ser una combinación de letras, números, símbolos, etc.
-  // Aquí hay un ejemplo básico:
-  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-  const passwordLength = 10;
-  let newPassword = '';
-  for (let i = 0; i < passwordLength; i++) {
-    newPassword += characters.charAt(Math.floor(Math.random() * characters.length));
+  const length = 7;
+  const charset = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+
+  let password = '';
+
+  for (let i = 0; i < length; i++) {
+      const randomIndex = Math.floor(Math.random() * charset.length);
+      password += charset.charAt(randomIndex);
   }
-  return newPassword;
+
+  return password;
 };
 
 
@@ -192,8 +213,10 @@ module.exports = {
   deleteUserById,
   loginUser,
   getAdmin,
+  getEmailUserProjectLeader,
+  getDataUserProjectLeader,
   generateNewPassword,
-  generateRandomPassword
+  generateRandomPassword,
 };
 
 
