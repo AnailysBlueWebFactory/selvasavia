@@ -276,6 +276,7 @@ const updateStatusCallById = async (req, res) => {
 
   // Función para actualizar la publicación de una convocatoria
 const updatePublicationById = async (req, res) => {
+  //console.log("req.body: "+req.body);
   try {
     const { callId, publicationTitle, publicationDetail } = req.body;
 const publicationImage = req.file ? req.file : null;
@@ -284,7 +285,7 @@ const publicationImage = req.file ? req.file : null;
 if (!callId || !publicationTitle || !publicationDetail || !publicationImage) {
   return res.status(400).json({
     status: 'error',
-    message: 'Se requieren los campos callId, PublicationTitle, PublicationDetail y PublicationImage',
+    message: 'Se requieren los campos callId, publicationTitle, publicationDetail y publicationImage',
     code: 400
   });
 }
@@ -305,6 +306,15 @@ if (!callId || !publicationTitle || !publicationDetail || !publicationImage) {
     });
 
     if (updated) {
+      const nameProjectLeader = await userModel.getDataUserProjectLeader(callId,"challengeLeaderName");
+      const emailrojectLeader = await userModel.getDataUserProjectLeader(callId,"emailAddress");
+      
+      let emailSubject = 'Convocatoria Publicada';
+      let emailBody = `Tu Convocatoria ha sido Publicada`;
+      // Replace 'call.emailCall' with the actual email address field from your call record
+      await sendEmail(emailrojectLeader.emailAddress, emailSubject, emailBody);
+    
+
       res.status(200).json({
         status: 'success',
         message: 'La publicación de la convocatoria ha sido creada exitosamente.',
