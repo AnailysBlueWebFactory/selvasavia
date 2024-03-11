@@ -34,6 +34,8 @@ router.post('/getCallsGroupedByStatus', authenticateToken, callsController.getCa
 router.post('/insertCallDetails', authenticateToken, callsController.insertCallDetails);
 // Ruta para crear una nueva publicación de convocatoria
 router.post('/updatePublicationById', authenticateToken, upload.single('publicationImage'), callsController.updatePublicationById);
+// Ruta para aplicar a convocatoria por id
+router.post('/applicationCallById', authenticateToken, callsController.applicationCallById);
 
 
 module.exports = router;

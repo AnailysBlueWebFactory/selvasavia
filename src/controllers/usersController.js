@@ -3,6 +3,7 @@ const userModel = require('../models/userModel');
 const createUser = async (req, res) => {
     try {
      
+      console.log("createUser");
 
       const { name, email, password, role } = req.body;
 
@@ -42,6 +43,8 @@ const createUser = async (req, res) => {
 const getAllUsers = async (req, res) => {
   try {
     const users = await userModel.getAllUsers();
+    console.log("getAllUsers");
+
     res.status(200).json({
         "status": "success",
         "users": users,
@@ -57,7 +60,10 @@ const getAllUsers = async (req, res) => {
 const getUserById = async (req, res) => {
   const { userId } = req.body;
   try {
-    const user = await userModel.getUserById(userId);
+    const user = await userModel.getUser
+    ById(userId);
+    console.log("getUserById");
+
     if (user) {
       res.status(200).json({
         "status": "success",
@@ -75,10 +81,10 @@ const getUserById = async (req, res) => {
 };
 
 const updateUserById = async (req, res) => {
-  const { name, email, password, role, userId} = req.body;
-
-   
+  const { name, email, password, role, userId} = req.body;   
   try {
+    console.log("updateUserById");
+
     // Verifica si todos los parámetros necesarios están definidos
    if (userId === undefined || name === undefined || email === undefined || password === undefined || role === undefined) {
     return res.status(400).json({
@@ -113,6 +119,8 @@ const updateUserById = async (req, res) => {
 const deleteUserById = async (req, res) => {
     const { userId } = req.body;
   try {
+    console.log("deleteUserById");
+
     const deleted = await userModel.deleteUserById(userId);
     if (deleted) {
       res.status(200).json({
@@ -136,6 +144,7 @@ const deleteUserById = async (req, res) => {
 const loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
+    console.log("loginUser");
 
     // Validar el formato del correo electrónico
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -176,6 +185,8 @@ const generateAndSendNewPassword  = async (req, res) => {
   const { userId, userEmail } = req.body;
 
   try {
+    console.log("generateAndSendNewPassword");
+
     const newPassword = await userModel.generateNewPassword(userId);
 
     if (newPassword) {

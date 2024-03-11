@@ -24,7 +24,7 @@ const getAdmin = async (req, res) => {
 const createCall = async (req, res) => {
     try {
      
-
+      console.log("createCall");
       const { challengeCallName, challengeLeaderCallName, institutionOrganizationCall, actorTypeCall, emailCall, phoneNumberCall, contextDescriptionCall, specificProblemDescriptionCall, challengeFormulaCall, requiredResourcesCall, invitedParticipantsCall, informationSourcesCall, observationsCall } = req.body;
 
       // Validar el formato del correo electrónico
@@ -76,6 +76,7 @@ const createCall = async (req, res) => {
     try {
       // Obtener el estado opcional del cuerpo de la solicitud JSON
       const { status } = req.body;
+      console.log("getAllCalls");
 
       // Obtener todas las convocatorias
       let calls;
@@ -101,8 +102,11 @@ const createCall = async (req, res) => {
 
   const getCallById = async (req, res) => {
   const { callId } = req.body;
+  
+ 
   try {
     const call = await callModel.getCallById(callId);
+    console.log("getCallById");
     if (call) {
       res.status(200).json({
         "status": "success",
@@ -121,6 +125,8 @@ const createCall = async (req, res) => {
 
 const updateStatusCallById = async (req, res) => {
   const { status, id } = req.body;
+
+  console.log("updateStatusCallById");
    
   try {
     // Verifica si todos los parámetros necesarios están definidos
@@ -209,6 +215,8 @@ const updateStatusCallById = async (req, res) => {
     try {
       // Obtener la lista de convocatorias agrupadas por estado y su cantidad
       const callsGroupedByStatus = await callModel.getCallsGroupedByStatus();
+
+      console.log("getCallsGroupedByStatus");
   
       res.status(200).json({
         status: 'success',
@@ -281,6 +289,8 @@ const updatePublicationById = async (req, res) => {
     const { callId, publicationTitle, publicationDetail } = req.body;
 const publicationImage = req.file ? req.file : null;
 
+console.log("updatePublicationById");
+
 // Verifica si todos los parámetros necesarios están definidos
 if (!callId || !publicationTitle || !publicationDetail || !publicationImage) {
   return res.status(400).json({
@@ -330,55 +340,51 @@ if (!callId || !publicationTitle || !publicationDetail || !publicationImage) {
 };
 
  // Función para actualizar la publicación de una convocatoria
- const ApplicationCallById = async (req, res) => {
+ const applicationCallById = async (req, res) => {
   //console.log("req.body: "+req.body);
   try {
-    const { callId, emailApplicant, publicationDetail } = req.body;
+    const { callId, fullName, emailApplicant, cellPhone, organization, becauseInterest,determineSupport,relevantInformation,availabilityProject } = req.body;
 const publicationImage = req.file ? req.file : null;
 
 // Verifica si todos los parámetros necesarios están definidos
-if (!callId || !publicationTitle || !publicationDetail || !publicationImage) {
+if (!callId || !fullName || !emailApplicant  || !cellPhone || !organization || !becauseInterest|| !determineSupport || !relevantInformation || !availabilityProject){
   return res.status(400).json({
     status: 'error',
-    message: 'Se requieren los campos callId, publicationTitle, publicationDetail y publicationImage',
+    message: 'Se requieren los campos callId, fullName, organization, becauseInterest, determineSupport, relevantInformation y availabilityProject',
     code: 400
   });
+  
 }
-      // Utilizar slugify para generar un nombre de archivo amigable
-   //const nombreArchivoAmigable = slugify(publicationImage.filename, { replacement: '_', lower: true });
-     // Utilizar slugify para generar un nombre de archivo amigable
-     const nombreArchivo = publicationImage.filename.replace(/\s+/g, '_');
-
-    // Construir ruta absoluta usando path.join
-    const rutaAbsoluta = path.join('../uploads', nombreArchivo);
-
-    const imagePath='uploads/'+nombreArchivo;
-    const updated = await callModel.updatePublicationById({
-      callId,
-      publicationTitle,
-      publicationDetail,
-      imagePath
-    });
-
-    if (updated) {
+console.log("applicationCallById");
+    //if (updated) {
       const nameProjectLeader = await userModel.getDataUserProjectLeader(callId,"challengeLeaderName");
       const emailrojectLeader = await userModel.getDataUserProjectLeader(callId,"emailAddress");
       
-      let emailSubject = 'Convocatoria Publicada';
-      let emailBody = `Tu Convocatoria ha sido Publicada`;
+      let emailSubject = 'Tienes un aplicante a una convocatoria';
+      let emailBody = `Tienes un nievo aplicanste! Cada vez estar más cerca de iniciar tu proyecto en Selvasavia
+      estos son los siguientes datos del aplicante:
+      Nombre completo: `+fullName+`      
+      Organización: `+organization+`
+      Celular: `+cellPhone+`
+      correo electrónico: `+emailApplicant+`
+      Descripcon interes del proyecto: `+becauseInterest+`
+      Consideracion de apoyo: `+determineSupport+`
+      Información relevante: `+relevantInformation+`
+      Disponibilidad: `+availabilityProject+`
+      `;
       // Replace 'call.emailCall' with the actual email address field from your call record
       await sendEmail(emailrojectLeader.emailAddress, emailSubject, emailBody);
     
 
       res.status(200).json({
         status: 'success',
-        message: 'La publicación de la convocatoria ha sido creada exitosamente.',
+        message: 'Aplicación creada exitosamente.',
         code: 200,
-        endpoint: '/calls/updatePublicationById'
+        endpoint: '/calls/applicationCallById'
       });
-    } else {
+   /* } else {
       res.status(404).json({ message: 'Convocatoria no encontrada' });
-    }
+    }*/
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -394,5 +400,5 @@ module.exports = {
   getCallsGroupedByStatus,
   insertCallDetails,
   updatePublicationById,
-  ApplicationCallById
+  applicationCallById
 };
