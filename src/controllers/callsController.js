@@ -452,23 +452,24 @@ const getAllCallSite = async (req, res) => {
       let calls;
       let query = '';
       if (status && category) {
-        query = "SELECT callId, category, publicationTitle, publicationDetail, publicationImage, CreationDate as creationDate, statusCall FROM calls WHERE statusCall = '"+status+"' AND category = '"+category+"'";      
+        query = "SELECT callId, category, publicationTitle, publicationDetail, publicationImage, DATE_FORMAT(CreationDate, '%d/%m/%Y') AS creationDate,   statusCall FROM calls WHERE statusCall = '"+status+"' AND category = '"+category+"'";      
           
       } else if (status) {
-        query = "SELECT callId, category, publicationTitle, publicationDetail, publicationImage, CreationDate as creationDate, statusCall FROM calls WHERE statusCall = '"+status+"'";      
+        query = "SELECT callId, category, publicationTitle, publicationDetail, publicationImage, DATE_FORMAT(CreationDate, '%d/%m/%Y') AS creationDate,  statusCall FROM calls WHERE statusCall = '"+status+"'";      
 
       } else if (category) {
-        query = "SELECT callId, category, publicationTitle, publicationDetail, publicationImage, CreationDate as creationDate, statusCall FROM calls WHERE category = '"+category+"'";      
+        query = "SELECT callId, category, publicationTitle, publicationDetail, publicationImage, DATE_FORMAT(CreationDate, '%d/%m/%Y') AS creationDate,  statusCall FROM calls WHERE category = '"+category+"'";      
 
       } else {
-        query = "SELECT callId, category, publicationTitle, publicationDetail, publicationImage, CreationDate as creationDate, statusCall FROM calls ";      
+        query = "SELECT callId, category, publicationTitle, publicationDetail, publicationImage, DATE_FORMAT(CreationDate, '%d/%m/%Y') AS creationDate,  statusCall FROM calls ";      
 
       }
 
-      if (limitNumber && pageNumber) {
-        query += " LIMIT  "+limitNumber+" OFFSET  "+pageNumber;      
+      if (limitNumber ) {
+        query += " LIMIT  "+limitNumber;     
           
       }
+
       calls = await callModel.getAllCallSite(query);
 
       // Enviar una respuesta con las convocatorias obtenidas
