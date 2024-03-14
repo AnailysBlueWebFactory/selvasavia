@@ -152,30 +152,38 @@ const insertCallDetails = async (callId, detailsData) => {
 // Función para actualizar la publicación de una convocatoria
 const updatePublicationById = async (data) => {
   try {
-    const { callId, publicationTitle, publicationDetail, imagePath } = data;
-
-    // Si publicationImage está presente, guarda la imagen en el directorio del proyecto
-    /*if (publicationImage) {
-      const imageFileName = `publication_${callId}${path.extname(publicationImage.originalname)}`;
-      const imagePath = path.join(__dirname, 'publications', imageFileName);
-
-      await publicationImage.mv(imagePath);
-    }*/
+    const { callId, publicationTitle, publicationDetail, category, imagePath } = data;
 
     const query = `
       UPDATE calls 
-      SET PublicationTitle = ?, PublicationDetail = ?, PublicationImage = ?, StatusCall='Open'
+      SET PublicationTitle = ?, PublicationDetail = ?, PublicationImage = ?, category = ?, StatusCall='Open'
       WHERE CallId = ?;
     `;
 
-    const values = [publicationTitle, publicationDetail, imagePath, callId];
-
+    const values = [publicationTitle, publicationDetail, imagePath, category, callId];
     const [result] = await pool.execute(query, values);
     return result.affectedRows > 0;
   } catch (error) {
     throw error;
   }
 };
+
+
+
+const getAllCallSite = async (q) => {
+  try {
+      let query = q;      
+      const [calls] = await pool.query(query);
+
+      return calls;
+  } catch (error) {
+      throw error;
+  }
+};
+
+
+
+
 
 module.exports = {
   createCall,
@@ -187,6 +195,8 @@ module.exports = {
   insertCallDetails,
   //createPublication
   updatePublicationById,
+  getAllCallSite
+  
 };
 
 

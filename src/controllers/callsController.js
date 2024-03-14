@@ -24,7 +24,7 @@ const getAdmin = async (req, res) => {
 const createCall = async (req, res) => {
     try {
      
-      console.log("createCall");
+      console.log("getCallById");
       const { challengeCallName, challengeLeaderCallName, institutionOrganizationCall, actorTypeCall, emailCall, phoneNumberCall, contextDescriptionCall, specificProblemDescriptionCall, challengeFormulaCall, requiredResourcesCall, invitedParticipantsCall, informationSourcesCall, observationsCall } = req.body;
 
       // Validar el formato del correo electrónico
@@ -286,13 +286,13 @@ const updateStatusCallById = async (req, res) => {
 const updatePublicationById = async (req, res) => {
   //console.log("req.body: "+req.body);
   try {
-    const { callId, publicationTitle, publicationDetail } = req.body;
-const publicationImage = req.file ? req.file : null;
+    const { callId, publicationTitle, publicationDetail, category } = req.body;
+    const publicationImage = req.file ? req.file : null;
 
 console.log("updatePublicationById");
 
 // Verifica si todos los parámetros necesarios están definidos
-if (!callId || !publicationTitle || !publicationDetail || !publicationImage) {
+if (!callId || !publicationTitle || !publicationDetail || !publicationImage || !category) {
   return res.status(400).json({
     status: 'error',
     message: 'Se requieren los campos callId, publicationTitle, publicationDetail y publicationImage',
@@ -312,6 +312,7 @@ if (!callId || !publicationTitle || !publicationDetail || !publicationImage) {
       callId,
       publicationTitle,
       publicationDetail,
+      category,
       imagePath
     });
 
@@ -390,6 +391,99 @@ console.log("applicationCallById");
   }
 };
 
+/*const getAllCallSite = async (req, res) => {
+  try {
+      // Obtener el parámetro de paginación y el límite de la solicitud
+      const { page = 1, limit = 10, category  } = req.query;
+
+      // Convertir a números enteros
+      const pageNumber = parseInt(page);
+      const limitNumber = parseInt(limit);
+
+      // Calcular el desplazamiento
+      const offset = (pageNumber - 1) * limitNumber;
+
+      // Obtener las convocatorias abiertas
+      const openCalls = await callModel.getAllCallSite('open', limitNumber, offset);
+
+      // Obtener las convocatorias cerradas
+      const closedCalls = await callModel.getAllCallSite('closed', limitNumber, offset);
+
+      // Combinar las convocatorias abiertas y cerradas
+      const allCalls = [...openCalls, ...closedCalls];
+
+      // Enviar una respuesta con las convocatorias combinadas
+      res.status(200).json({
+          status: 'success',
+          calls: allCalls,
+          message: 'Lista de convocatorias obtenida exitosamente',
+          code: 200,
+          endpoint: '/calls/getAllCallSite'
+      });
+  } catch (error) {
+      res.status(500).json({ error: error.message });
+  }
+};
+*/
+
+const getAllCallSite = async (req, res) => {
+  try {
+      // Obtener los parámetros de paginación, estado y categoría de la solicitud
+      const { page, limit, status, category } = req.body;
+      console.log("getAllCallSite");
+      //console.log("page: " + page);
+      //console.log("limit: " + limit);
+
+      let pageNumber = 0;
+      let limitNumber = 0;
+      let offset = 0;
+      // Verificar si page y limit son números
+      if (!isNaN(page) && !isNaN(limit)) {
+        // Convertir a números enteros
+         pageNumber = parseInt(page);
+         limitNumber = parseInt(limit);
+
+        // Calcular el desplazamiento
+        offset = (pageNumber - 1) * limitNumber;
+        //console.log("limitNumber: " + limitNumber);
+      } else {
+        console.error("Error: page o limit no son números válidos.");
+      }
+      let calls;
+      let query = '';
+      if (status && category) {
+        query = "SELECT callId, category, publicationTitle, publicationDetail, publicationImage, CreationDate as creationDate, statusCall FROM calls WHERE statusCall = '"+status+"' AND category = '"+category+"'";      
+          
+      } else if (status) {
+        query = "SELECT callId, category, publicationTitle, publicationDetail, publicationImage, CreationDate as creationDate, statusCall FROM calls WHERE statusCall = '"+status+"'";      
+
+      } else if (category) {
+        query = "SELECT callId, category, publicationTitle, publicationDetail, publicationImage, CreationDate as creationDate, statusCall FROM calls WHERE category = '"+category+"'";      
+
+      } else {
+        query = "SELECT callId, category, publicationTitle, publicationDetail, publicationImage, CreationDate as creationDate, statusCall FROM calls ";      
+
+      }
+
+      if (limitNumber && pageNumber) {
+        query += " LIMIT  "+limitNumber+" OFFSET  "+pageNumber;      
+          
+      }
+      calls = await callModel.getAllCallSite(query);
+
+      // Enviar una respuesta con las convocatorias obtenidas
+      res.status(200).json({
+          status: 'success',
+          calls: calls,
+          message: 'Lista de convocatorias obtenida exitosamente',
+          code: 200,
+          endpoint: '/calls/getAllCallSite'
+      });
+  } catch (error) {
+      res.status(500).json({ error: error.message });
+  }
+};
+
 
 module.exports = {
   createCall,
@@ -400,5 +494,6 @@ module.exports = {
   getCallsGroupedByStatus,
   insertCallDetails,
   updatePublicationById,
-  applicationCallById
+  applicationCallById,
+  getAllCallSite
 };
