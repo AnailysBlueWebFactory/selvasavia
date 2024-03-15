@@ -454,6 +454,32 @@ const getAllCallSite = async (req, res) => {
   }
 };
 
+const getAllCallsLeader = async (req, res) => {
+  try {
+    // Obtener el estado opcional del cuerpo de la solicitud JSON
+    const { email, status } = req.body;
+    console.log("getAllCallsLeader");
+
+    console.log("email: "+email);
+    console.log("status: "+status);
+
+    // Obtener todas las convocatorias
+    let calls;
+    calls = await callModel.getAllCallsLeader(email, status);
+   
+    res.status(200).json({
+        "status": "success",
+        "calls": calls,
+        "message": "Lista de convocatorias obtenida exitosamente",
+        "code": 200,
+        "endpoint": "/calls/getAllCallsLeader"
+      });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+
 
 module.exports = {
   createCall,
@@ -465,5 +491,6 @@ module.exports = {
   insertCallDetails,
   updatePublicationById,
   applicationCallById,
-  getAllCallSite
+  getAllCallSite,
+  getAllCallsLeader
 };

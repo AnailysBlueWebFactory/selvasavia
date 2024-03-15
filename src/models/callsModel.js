@@ -43,9 +43,24 @@ const createCall = async (callData) => {
     }
   };
 
+  const getAllCallsLeader = async (email,status) => {
+    const query = "SELECT * FROM `calls` WHERE emailAddress = ? AND statusCall IN (?);";
+    const values = [email,status];
+    try {
+      const [calls] = await pool.query(query,values);
+       // Imprimir el contenido de calls
+    //console.log("Contenido de calls:", calls);
+      return  calls;
+    } catch (error) {
+      throw error;
+    }
+  };
+
+  
+
   const getCallsByStatus  = async (status) => {
     const query = "SELECT * FROM calls WHERE  statusCall = '"+status+"'";
-  
+    
     try {
       const [calls] = await pool.query(query);
       return calls;
@@ -188,6 +203,7 @@ const getAllCallSite = async (q) => {
 module.exports = {
   createCall,
   getAllCalls,
+  getAllCallsLeader,
   getCallsByStatus,
   updatestatusCallById,
   getCallById,

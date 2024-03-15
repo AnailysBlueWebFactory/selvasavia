@@ -38,6 +38,8 @@ router.post('/updatePublicationById', authenticateToken, upload.single('publicat
 router.post('/applicationCallById', callsController.applicationCallById);
 // Ruta para aplicar a convocatoria por id
 router.post('/getAllCallSite', callsController.getAllCallSite);
+// Ruta para listar las convocatorias a gestionar un Leader
+router.post('/getAllCallsLeader', authenticateToken, callsController.getAllCallsLeader);
 
 
 module.exports = router;
