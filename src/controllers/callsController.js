@@ -344,14 +344,14 @@ if (!callId || !publicationTitle || !publicationDetail || !publicationImage || !
  const applicationCallById = async (req, res) => {
   //console.log("req.body: "+req.body);
   try {
-    const { callId, fullName, emailApplicant, cellPhone, organization, becauseInterest,determineSupport,relevantInformation,availabilityProject } = req.body;
+    const { callId, fullName, emailApplicant, cellPhone,typeActor, organization, becauseInterest,determineSupport,relevantInformation,availabilityProject } = req.body;
 const publicationImage = req.file ? req.file : null;
 
 // Verifica si todos los parámetros necesarios están definidos
-if (!callId || !fullName || !emailApplicant  || !cellPhone || !organization || !becauseInterest|| !determineSupport || !relevantInformation || !availabilityProject){
+if (!callId || !fullName || !emailApplicant  || !cellPhone || !typeActor || !organization || !becauseInterest|| !determineSupport || !relevantInformation || !availabilityProject){
   return res.status(400).json({
     status: 'error',
-    message: 'Se requieren los campos callId, fullName, organization, becauseInterest, determineSupport, relevantInformation y availabilityProject',
+    message: 'Se requieren los campos callId, fullName, typeActor,organization, becauseInterest, determineSupport, relevantInformation y availabilityProject',
     code: 400
   });
   
@@ -365,6 +365,7 @@ console.log("applicationCallById");
       let emailBody = `Tienes un nievo aplicanste! Cada vez estar más cerca de iniciar tu proyecto en Selvasavia
       estos son los siguientes datos del aplicante:
       Nombre completo: `+fullName+`      
+      Tipo de Actor: `+typeActor+`
       Organización: `+organization+`
       Celular: `+cellPhone+`
       correo electrónico: `+emailApplicant+`
@@ -373,6 +374,8 @@ console.log("applicationCallById");
       Información relevante: `+relevantInformation+`
       Disponibilidad: `+availabilityProject+`
       `;
+
+      console.log(emailBody);
       // Replace 'call.emailCall' with the actual email address field from your call record
       await sendEmail(emailrojectLeader.emailAddress, emailSubject, emailBody);
     
@@ -391,40 +394,6 @@ console.log("applicationCallById");
   }
 };
 
-/*const getAllCallSite = async (req, res) => {
-  try {
-      // Obtener el parámetro de paginación y el límite de la solicitud
-      const { page = 1, limit = 10, category  } = req.query;
-
-      // Convertir a números enteros
-      const pageNumber = parseInt(page);
-      const limitNumber = parseInt(limit);
-
-      // Calcular el desplazamiento
-      const offset = (pageNumber - 1) * limitNumber;
-
-      // Obtener las convocatorias abiertas
-      const openCalls = await callModel.getAllCallSite('open', limitNumber, offset);
-
-      // Obtener las convocatorias cerradas
-      const closedCalls = await callModel.getAllCallSite('closed', limitNumber, offset);
-
-      // Combinar las convocatorias abiertas y cerradas
-      const allCalls = [...openCalls, ...closedCalls];
-
-      // Enviar una respuesta con las convocatorias combinadas
-      res.status(200).json({
-          status: 'success',
-          calls: allCalls,
-          message: 'Lista de convocatorias obtenida exitosamente',
-          code: 200,
-          endpoint: '/calls/getAllCallSite'
-      });
-  } catch (error) {
-      res.status(500).json({ error: error.message });
-  }
-};
-*/
 
 const getAllCallSite = async (req, res) => {
   try {
@@ -438,13 +407,13 @@ const getAllCallSite = async (req, res) => {
       let limitNumber = 0;
       let offset = 0;
       // Verificar si page y limit son números
-      if (!isNaN(page) && !isNaN(limit)) {
+      if (!isNaN(limit)) {
         // Convertir a números enteros
-         pageNumber = parseInt(page);
+         //pageNumber = parseInt(page);
          limitNumber = parseInt(limit);
 
         // Calcular el desplazamiento
-        offset = (pageNumber - 1) * limitNumber;
+        //offset = (pageNumber - 1) * limitNumber;
         //console.log("limitNumber: " + limitNumber);
       } else {
         console.error("Error: page o limit no son números válidos.");
