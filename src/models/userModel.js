@@ -79,9 +79,24 @@ const getEmailUserProjectLeader = async (id) => {
 
 const getDataUserProjectLeader = async (id,campo) => {
   const query = "SELECT "+campo+"  FROM calls  WHERE callId = "+id;
+
+  console.log(query);
   try {
     const [users] = await pool.query(query);
     return users[0];
+  } catch (error) {
+    throw error;
+  }
+};
+
+const isEmailAlreadyTaken = async (email) => {
+  const query = "SELECT count(*) AS exist FROM users WHERE emailUser=?";
+  const values= [email];
+
+  console.log(query+" "+values);
+  try {
+    const [users] = await pool.query(query,values);
+    return users[0].exist;
   } catch (error) {
     throw error;
   }
@@ -217,6 +232,7 @@ module.exports = {
   getDataUserProjectLeader,
   generateNewPassword,
   generateRandomPassword,
+  isEmailAlreadyTaken
 };
 
 

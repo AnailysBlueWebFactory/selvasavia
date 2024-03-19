@@ -18,7 +18,6 @@ const storage = multer.diskStorage({
 
 
 // Rutas para gestionar Convocatorias
-
 // Crear una nueva Convocatoria
 router.post('/createCall', callsController.createCall);
 // Obtener todoa las convocatorias
@@ -26,8 +25,7 @@ router.post('/getAllCalls', authenticateToken, callsController.getAllCalls);
 // Obtener convocatoria por id
 router.post('/getCallById', authenticateToken, callsController.getCallById);
 // Obtener convocatoria por id
-router.post('/updateStatusCallById', authenticateToken, callsController.updateStatusCallById);
-
+router.post('/updateStatusCallById', callsController.updateStatusCallById);
 // Ruta para obtener la lista de convocatorias agrupadas por estado y su cantidad
 router.post('/getCallsGroupedByStatus', authenticateToken, callsController.getCallsGroupedByStatus);
 // Ruta para insertar campos de detalle de convocatoria
