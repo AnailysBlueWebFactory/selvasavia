@@ -236,10 +236,6 @@ const sendEmail = async (to, subject, body) => {
     throw error;
   }
 };
-
-
-
-
 module.exports = {
   createUser,
   getAllUsers,

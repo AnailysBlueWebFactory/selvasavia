@@ -1,6 +1,6 @@
-const mysql = require('mysql2/promise');
-const dotenv = require('dotenv');
-const path = require('path');
+const mysql = require("mysql2/promise");
+const dotenv = require("dotenv");
+const path = require("path");
 
 dotenv.config();
 
@@ -11,90 +11,116 @@ const pool = mysql.createPool({
   database: process.env.DB_NAME,
   waitForConnections: true,
   connectionLimit: 10,
-  queueLimit: 0
+  queueLimit: 0,
 });
 
 // Función para crear un nuevo usuario
 const createCall = async (callData) => {
-    const { challengeCallName, challengeLeaderCallName, institutionOrganizationCall, actorTypeCall, emailCall, phoneNumberCall, contextDescriptionCall, specificProblemDescriptionCall, challengeFormulaCall, requiredResourcesCall, invitedParticipantsCall, informationSourcesCall, observationsCall  } = callData;
-  
-    // Asegúrate de que estas variables coincidan con los campos en tu base de datos
-    const query = "INSERT INTO calls  (ChallengeName, ChallengeLeaderName, InstitutionOrganization, ActorType, EmailAddress, PhoneNumber, ContextDescription, SpecificProblemDescription, ChallengeFormula, RequiredResources, InvitedParticipants, InformationSources, Observations, statusCall) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'New')";
-    const values = [ challengeCallName, challengeLeaderCallName, institutionOrganizationCall, actorTypeCall, emailCall, phoneNumberCall, contextDescriptionCall, specificProblemDescriptionCall, challengeFormulaCall, requiredResourcesCall, invitedParticipantsCall, informationSourcesCall, observationsCall ];
-  
-    try {
-      const [result] = await pool.query(query, values);
-      return result.insertId;
-    } catch (error) {
-      throw error;
-    }
-  };
+  const {
+    challengeCallName,
+    challengeLeaderCallName,
+    institutionOrganizationCall,
+    actorTypeCall,
+    emailCall,
+    phoneNumberCall,
+    contextDescriptionCall,
+    specificProblemDescriptionCall,
+    challengeFormulaCall,
+    requiredResourcesCall,
+    invitedParticipantsCall,
+    informationSourcesCall,
+    observationsCall,
+  } = callData;
 
-  const getAllCalls = async () => {
-    const query = 'SELECT * FROM calls';
-  
-    try {
-      const [calls] = await pool.query(query);
-       // Imprimir el contenido de calls
+  // Asegúrate de que estas variables coincidan con los campos en tu base de datos
+  const query =
+    "INSERT INTO calls  (ChallengeName, ChallengeLeaderName, InstitutionOrganization, ActorType, EmailAddress, PhoneNumber, ContextDescription, SpecificProblemDescription, ChallengeFormula, RequiredResources, InvitedParticipants, InformationSources, Observations, statusCall) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'New')";
+  const values = [
+    challengeCallName,
+    challengeLeaderCallName,
+    institutionOrganizationCall,
+    actorTypeCall,
+    emailCall,
+    phoneNumberCall,
+    contextDescriptionCall,
+    specificProblemDescriptionCall,
+    challengeFormulaCall,
+    requiredResourcesCall,
+    invitedParticipantsCall,
+    informationSourcesCall,
+    observationsCall,
+  ];
+
+  try {
+    const [result] = await pool.query(query, values);
+    return result.insertId;
+  } catch (error) {
+    throw error;
+  }
+};
+
+const getAllCalls = async () => {
+  const query = "SELECT * FROM calls";
+
+  try {
+    const [calls] = await pool.query(query);
+    // Imprimir el contenido de calls
     //console.log("Contenido de calls:", calls);
-      return  calls;
-    } catch (error) {
-      throw error;
-    }
-  };
+    return calls;
+  } catch (error) {
+    throw error;
+  }
+};
 
-  const getAllCallsLeader = async (email,status) => {
-    const query = "SELECT * FROM `calls` WHERE emailAddress = ? AND statusCall IN (?);";
-    const values = [email,status];
-    try {
-      const [calls] = await pool.query(query,values);
-       // Imprimir el contenido de calls
+const getAllCallsLeader = async (email, status) => {
+  const query =
+    "SELECT * FROM `calls` WHERE emailAddress = ? AND statusCall IN (?);";
+  const values = [email, status];
+  try {
+    const [calls] = await pool.query(query, values);
+    // Imprimir el contenido de calls
     //console.log("Contenido de calls:", calls);
-      return  calls;
-    } catch (error) {
-      throw error;
-    }
-  };
+    return calls;
+  } catch (error) {
+    throw error;
+  }
+};
 
-  
+const getCallsByStatus = async (status) => {
+  const query = "SELECT * FROM calls WHERE  statusCall = '" + status + "'";
 
-  const getCallsByStatus  = async (status) => {
-    const query = "SELECT * FROM calls WHERE  statusCall = '"+status+"'";
-    
-    try {
-      const [calls] = await pool.query(query);
-      return calls;
-    } catch (error) {
-      throw error;
-    }
-  };
+  try {
+    const [calls] = await pool.query(query);
+    return calls;
+  } catch (error) {
+    throw error;
+  }
+};
 
-  const getCallById = async (callId) => {
-    const query = 'SELECT * FROM calls WHERE CallId = ?';
-    const values = [callId];
-  
-    try {
-      const [call] = await pool.query(query, values);
-      return call[0];
-    } catch (error) {
-      throw error;
-    }
-  };
+const getCallById = async (callId) => {
+  const query = "SELECT * FROM calls WHERE CallId = ?";
+  const values = [callId];
 
+  try {
+    const [call] = await pool.query(query, values);
+    return call[0];
+  } catch (error) {
+    throw error;
+  }
+};
 
-  const updatestatusCallById = async (data) => {
-    try {
-      console.log("Has aprobado la solicitud");
-      const { status, id } = data;
-      const query = "UPDATE calls SET statusCall = ? WHERE CallId = ?";
-     
-      const [result] = await pool.execute(query, [status, id]);
-      return result.affectedRows > 0;
-    } catch (error) {
-      throw error;
-    }
-  };
+const updatestatusCallById = async (data) => {
+  try {
+    console.log("Has aprobado la solicitud");
+    const { status, id } = data;
+    const query = "UPDATE calls SET statusCall = ? WHERE CallId = ?";
 
+    const [result] = await pool.execute(query, [status, id]);
+    return result.affectedRows > 0;
+  } catch (error) {
+    throw error;
+  }
+};
 
 // Función para obtener la lista de convocatorias agrupadas por estado y su cantidad
 const getCallsGroupedByStatus = async () => {
@@ -151,7 +177,7 @@ const insertCallDetails = async (callId, detailsData) => {
       detailsData.generalObjective,
       detailsData.describe3SpecificObjectives,
       detailsData.project3Impacts,
-      callId
+      callId,
     ];
 
     // Ejecuta la consulta
@@ -163,11 +189,11 @@ const insertCallDetails = async (callId, detailsData) => {
   }
 };
 
-
 // Función para actualizar la publicación de una convocatoria
 const updatePublicationById = async (data) => {
   try {
-    const { callId, publicationTitle, publicationDetail, category, imagePath } = data;
+    const { callId, publicationTitle, publicationDetail, category, imagePath } =
+      data;
 
     const query = `
       UPDATE calls 
@@ -175,7 +201,13 @@ const updatePublicationById = async (data) => {
       WHERE CallId = ?;
     `;
 
-    const values = [publicationTitle, publicationDetail, imagePath, category, callId];
+    const values = [
+      publicationTitle,
+      publicationDetail,
+      imagePath,
+      category,
+      callId,
+    ];
     const [result] = await pool.execute(query, values);
     return result.affectedRows > 0;
   } catch (error) {
@@ -183,22 +215,16 @@ const updatePublicationById = async (data) => {
   }
 };
 
-
-
 const getAllCallSite = async (q) => {
   try {
-      let query = q;      
-      const [calls] = await pool.query(query);
+    let query = q;
+    const [calls] = await pool.query(query);
 
-      return calls;
+    return calls;
   } catch (error) {
-      throw error;
+    throw error;
   }
 };
-
-
-
-
 
 module.exports = {
   createCall,
@@ -211,10 +237,5 @@ module.exports = {
   insertCallDetails,
   //createPublication
   updatePublicationById,
-  getAllCallSite
-  
+  getAllCallSite,
 };
-
-
-
-   

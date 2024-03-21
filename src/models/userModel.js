@@ -167,7 +167,7 @@ const loginUser = async (email, password) => {
     
     if (passwordMatch) {      
       // Generar un token con la información del usuario (puedes personalizar la información incluida en el token)
-      const token = jwt.sign({ userId: user.idUser, email: user.emailUser, role: user.roleUser }, process.env.JWT_SECRET, { expiresIn: '1h' });
+      const token = jwt.sign({ userId: user.idUser, email: user.emailUser, role: user.roleUser }, process.env.JWT_SECRET, { expiresIn: '1d' });
       // Solo incluir los campos deseados en la respuesta
       const responseData = {
         userId: user.idUser,
