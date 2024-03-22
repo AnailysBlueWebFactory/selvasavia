@@ -12,27 +12,31 @@ const createProject = async (req, res) => {
     console.log("createProject");
     const {
       callId,
-      contextDescriptionCall,
-      specificProblemDescriptionCall,
-      challengeFormulaCall,
-      requiredResourcesCall,
-      invitedParticipantsCall,
-      informationSourcesCall,
-      observationsCall,
+      projectContext,
+      issueToResolve,
+      generalObjective,
+      specificObjectives,
+      proposedSolution,
+      beneficiaryPopulation,
+      projectTeamMembers,
+      availableResources,
+      projectInformationSource,
+      projectNotes,
+      projectBenefits
     } = req.body;
-    //const callId = await projectsModel.createProject(req.body);
-    let emailCall = "anailys.rodriguez@gmail.com";
+    const projectId = await projectsModel.createProject(req.body);
+    //let emailCall = "anailys.rodriguez@gmail.com";
     // After successfully creating the call record, send an email
-    const emailSubject = "Nueva solicitud de convocatoria recibida";
-    const emailBody = `¡En hora buena! Acabamos de recibir una solicitud para una convocatoria en SelvaSavia con el ID  ${callId} para ser procesada.`;
-    const emailAdmin = await userModel.getAdmin();
-    console.log("emailCall: " + emailCall);
+   // const emailSubject = "Nueva solicitud de convocatoria recibida";
+    //const emailBody = `¡En hora buena! Acabamos de recibir una solicitud para una convocatoria en SelvaSavia con el ID  ${callId} para ser procesada.`;
+   // const emailAdmin = await userModel.getAdmin();
+    //console.log("emailCall: " + emailCall);
     // Replace 'call.emailCall' with the actual email address field from your call record
     //await sendEmail(emailCall, emailSubject, emailBody);
     res.status(201).json({
       status: "success",
       data: {
-        callId: callId,
+        projectId: projectId,
       },
       message: "Haz creado un nuevo proyecto exitosamente",
       code: 200,

@@ -15,40 +15,38 @@ const pool = mysql.createPool({
 });
 const createProject = async (callData) => {
   const {
-    challengeCallName,
-    challengeLeaderCallName,
-    institutionOrganizationCall,
-    actorTypeCall,
-    emailCall,
-    phoneNumberCall,
-    contextDescriptionCall,
-    specificProblemDescriptionCall,
-    challengeFormulaCall,
-    requiredResourcesCall,
-    invitedParticipantsCall,
-    informationSourcesCall,
-    observationsCall,
+    callId,
+    projectContext,
+    issueToResolve,
+    generalObjective,
+    specificObjectives,
+    proposedSolution,
+    beneficiaryPopulation,
+    projectTeamMembers,
+    availableResources,
+    projectInformationSource,
+    projectNotes,
+    projectBenefits
   } = callData;
 
   // Asegúrate de que estas variables coincidan con los campos en tu base de datos
   const query =
-    "INSERT INTO calls  (ChallengeName, ChallengeLeaderName, InstitutionOrganization, ActorType, EmailAddress, PhoneNumber, ContextDescription, SpecificProblemDescription, ChallengeFormula, RequiredResources, InvitedParticipants, InformationSources, Observations, statusCall) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'New')";
+    "INSERT INTO projects  (callId, projectContext, issueToResolve, generalObjective, specificObjectives, proposedSolution, beneficiaryPopulation, projectTeamMembers, availableResources, projectInformationSource, projectNotes, projectBenefits) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
   const values = [
-    challengeCallName,
-    challengeLeaderCallName,
-    institutionOrganizationCall,
-    actorTypeCall,
-    emailCall,
-    phoneNumberCall,
-    contextDescriptionCall,
-    specificProblemDescriptionCall,
-    challengeFormulaCall,
-    requiredResourcesCall,
-    invitedParticipantsCall,
-    informationSourcesCall,
-    observationsCall,
+    callId,
+    projectContext,
+    issueToResolve,
+    generalObjective,
+    specificObjectives,
+    proposedSolution,
+    beneficiaryPopulation,
+    projectTeamMembers,
+    availableResources,
+    projectInformationSource,
+    projectNotes,
+    projectBenefits
   ];
-
+  //console.log(query, values);
   try {
     const [result] = await pool.query(query, values);
     return result.insertId;
