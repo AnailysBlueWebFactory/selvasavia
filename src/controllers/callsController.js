@@ -1,4 +1,5 @@
 // Import models
+const { log } = require("console");
 const callModel = require("../models/callsModel");
 const userModel = require("../models/userModel");
 // Import nodemailer
@@ -72,8 +73,8 @@ const createCall = async (req, res) => {
     const emailSubject = "Nueva solicitud de convocatoria recibida";
     const emailBody = `¡En hora buena! Acabamos de recibir una solicitud para una convocatoria en SelvaSavia con el ID  ${callId} para ser procesada.`;
     const emailAdmin = await userModel.getAdmin();
-    console.log("emailAdmin: " + emailAdmin);
-    console.log("emailCall: " + emailCall);
+    //console.log("emailAdmin: " + emailAdmin);
+   // console.log("emailCall: " + emailCall);
     // Replace 'call.emailCall' with the actual email address field from your call record
     await sendEmail(emailCall, emailSubject, emailBody);
     res.status(201).json({
@@ -143,7 +144,7 @@ const getCallById = async (req, res) => {
 };
 
 const updateStatusCallById = async (req, res) => {
-  const { status, id } = req.body;
+  const { status, id, reason} = req.body;
 
   console.log("updateStatusCallById");
 
@@ -156,8 +157,21 @@ const updateStatusCallById = async (req, res) => {
         code: 400,
       });
     }
+    let erroreason
+    console.log("status::::: " + status);
+    // Replace 'call.emailCall' with the actual email address field from your call record
+    if (status == "Rejected") {
+      if (typeof reason === 'undefined' || reason === null || reason === '') {
+        return res.status(400).json({
+          status: "error",
+          message: "Debes especificar el motivo del rechaazo de la convocatoria: " + id,
+          code: 400,
+        });
+      }
+    }
+
     if (status === "Approved" || status === "Rejected") {
-      console.log("status: " + status);
+     //console.log("status: " + status);
       const nameProjectLeader = await userModel.getDataUserProjectLeader(
         id,
         "challengeLeaderName"
@@ -173,27 +187,30 @@ const updateStatusCallById = async (req, res) => {
         password: randomPassword,
         role: "Project Leader",
       };
+
       const userExist = await userModel.isEmailAlreadyTaken(
         emailrojectLeader.emailAddress
       );
-      console.log("userExist: " + userExist);
+
       if (userExist != 1) {
         const userId = await userModel.createUser(userData);
         let emailSubject = "Convocatoria Aprobada";
         let emailBody = `Tu Convocatoria ha sido Aprobada`;
         if (status === "Rejected") {
-          emailSubject = "Convocatoria Rechazada";
-          emailBody = `Tu Convocatoria ha sido Rechazada`;
+          emailSubject = "Convocatoria Rechazadaaaa";
+          emailBody = `Tu Convocatoria ha sido Rechazada :`+reason;
         }
-        console.log("status: " + status);
-        // Replace 'call.emailCall' with the actual email address field from your call record
+        
+        console.log("emailBody: "+emailBody);
         await sendEmail(
           emailrojectLeader.emailAddress,
           emailSubject,
           emailBody
         );
       }
+      
     }
+    
     const updated = await callModel.updatestatusCallById(req.body);
     if (updated) {
       res.status(200).json({

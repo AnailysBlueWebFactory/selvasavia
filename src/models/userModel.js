@@ -80,7 +80,7 @@ const getEmailUserProjectLeader = async (id) => {
 const getDataUserProjectLeader = async (id,campo) => {
   const query = "SELECT "+campo+"  FROM calls  WHERE callId = "+id;
 
-  console.log(query);
+//  console.log(query);
   try {
     const [users] = await pool.query(query);
     return users[0];
@@ -93,7 +93,7 @@ const isEmailAlreadyTaken = async (email) => {
   const query = "SELECT count(*) AS exist FROM users WHERE emailUser=?";
   const values= [email];
 
-  console.log(query+" "+values);
+//  console.log(query+" "+values);
   try {
     const [users] = await pool.query(query,values);
     return users[0].exist;
