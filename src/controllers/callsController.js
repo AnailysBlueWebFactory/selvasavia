@@ -194,20 +194,22 @@ const updateStatusCallById = async (req, res) => {
 
       if (userExist != 1) {
         const userId = await userModel.createUser(userData);
-        let emailSubject = "Convocatoria Aprobada";
-        let emailBody = `Tu Convocatoria ha sido Aprobada`;
-        if (status === "Rejected") {
-          emailSubject = "Convocatoria Rechazadaaaa";
-          emailBody = `Tu Convocatoria ha sido Rechazada :`+reason;
-        }
-        
-        console.log("emailBody: "+emailBody);
-        await sendEmail(
-          emailrojectLeader.emailAddress,
-          emailSubject,
-          emailBody
-        );
+       
       }
+
+      let emailSubject = "Convocatoria Aprobada";
+      let emailBody = `Tu Convocatoria ha sido Aprobada`;
+      if (status === "Rejected") {
+        emailSubject = "Convocatoria Rechazadaaaa";
+        emailBody = `Tu Convocatoria ha sido Rechazada :`+reason;
+      }
+      
+      //console.log("emailBody: "+emailBody);
+      await sendEmail(
+        emailrojectLeader.emailAddress,
+        emailSubject,
+        emailBody
+      );
       
     }
     
