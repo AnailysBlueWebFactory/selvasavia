@@ -202,15 +202,13 @@ const updateStatusCallById = async (req, res) => {
       if (status === "Rejected") {
         emailSubject = "Convocatoria Rechazadaaaa";
         emailBody = `Tu Convocatoria ha sido Rechazada :`+reason;
-      }
-      
+      }      
       //console.log("emailBody: "+emailBody);
       await sendEmail(
         emailrojectLeader.emailAddress,
         emailSubject,
         emailBody
-      );
-      
+      );      
     }
     
     const updated = await callModel.updatestatusCallById(req.body);

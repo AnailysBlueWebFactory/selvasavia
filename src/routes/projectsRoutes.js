@@ -13,4 +13,11 @@ router.post(
   projectsController.createProject
 );
 
+// Aplicacion a un PROYECTO
+router.post(
+  "/applicationProjectById",
+  authenticateToken,
+  projectsController.applicationProjectById
+);
+
 module.exports = router;
