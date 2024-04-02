@@ -16,7 +16,6 @@ router.post(
 // Aplicacion a un PROYECTO
 router.post(
   "/applicationProjectById",
-  authenticateToken,
   projectsController.applicationProjectById
 );
 
