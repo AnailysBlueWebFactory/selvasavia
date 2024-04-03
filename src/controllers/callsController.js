@@ -315,7 +315,7 @@ const updateStatusCallById = async (req, res) => {
                            rel="noopener noreferrer"
                            >blueprintransformation.com</a
                         >
-                        | <span>Derechos Reservados de autor Blue Print Transformation S.A.S. 2024 ®</span>
+                        | <span>Derechos Reservados Blue Print Transformation S.A.S. 2024 ®</span>
                      </span>
                   </td>
                </tr>
@@ -325,8 +325,117 @@ const updateStatusCallById = async (req, res) => {
    console.log(emailrojectLeader.emailAddress);
      //let emailBody = `Tu Convocatoria ha sido Aprobada`;
       if (status === "Rejected") {
-        emailSubject = "Convocatoria Rechazadaaaa";
-        emailBody = `Tu Convocatoria ha sido Rechazada :`+reason;
+        emailSubject = "Convocatoria Rechazada";
+        emailBody=`
+        <div style="background-color: #f9f9f9">
+        <table style="max-width: 600px; width: 100%; margin: auto; background-color: white">
+           <tr>
+              <td>
+                 <img
+                    src="http://34.170.121.255/uploads/emailmarketing/header.webp"
+                    alt="selva savia"
+                    width="100%"
+                    style="border-top-right-radius: 40px; border-top-left-radius: 40px"
+                 />
+              </td>
+           </tr>
+           <tbody style="padding-inline: 40px">
+           <tr>
+              <td style="text-align: center">
+                 <img src="http://34.170.121.255/uploads/emailmarketing/logo.png" alt="selva savia" width="200" style="margin-top: 20px" />
+              </td>
+           </tr>
+           <tr>
+              <td style="text-align: center"><img src="http://34.170.121.255/uploads/emailmarketing/gracias.png" alt="selva savia" width="420" /></td>
+           </tr>
+           <tr>
+              <td style="text-align: center">
+                 <p style="font-size: 18px; line-height: 1.4; padding-top: 20px">
+                    Lamentablemente, después de revisar tu aplicación, <br />
+                    hemos determinado que en este momento <br />
+                    no podemos avanzar con la publicación <br />
+                    de tu proyecto.
+                 </p>
+              </td>
+           </tr>
+           <tr>
+              <td style="text-align: center">
+                 <p style="font-size: 18px; margin-top: 20px; line-height: 1.4">(`+reason+`)</p>
+              </td>
+           </tr>
+
+           <tr>
+              <td style="text-align: center; padding-top: 20px">
+                 <p style="font-size: 18px">
+                    Apreciamos tu esfuerzo y tu contribución <br />
+                    a nuestra comunidad.
+                 </p>
+              </td>
+           </tr>
+           <tr>
+              <td style="text-align: center; padding-top: 20px">
+                 <p style="font-size: 18px; line-height: 1.4">
+                    Si tienes alguna pregunta o necesitas más <br />
+                    información sobre nuestra decisión, <br />
+                    no dudes en contactarnos.
+                 </p>
+              </td>
+           </tr>
+
+           <tr>
+              <td style="text-align: center; padding-top: 30px">
+                 <strong style="font-size: 18px"
+                    >¡Gracias por considerar a Selva Savia <br />
+                    para tu proyecto!</strong
+                 >
+              </td>
+           </tr>
+        </tbody style="padding-inline: 40px">
+           <tr>
+              <td style="padding-top: 50px; text-align: center">
+                 <span
+                    style="
+                       border-bottom-right-radius: 40px;
+                       border-bottom-left-radius: 40px;
+                       background-image: url('http://34.170.121.255/uploads/emailmarketing/header.webp');
+                       background-size: cover;
+                       background-position: left;
+                       display: block;
+                       font-size: 12px;
+                       padding: 30px;
+                       color: white;
+                    "
+                 >
+                    <a
+                       style="color: white; text-decoration: none"
+                       href="mailto:info@selvasavia.life"
+                       target="_blank"
+                       rel="noopener noreferrer"
+                       >info@selvasavia.life</a
+                    >
+                    |
+                    <a
+                       style="color: white; text-decoration: none"
+                       href="https://www.selvasavia.life/"
+                       target="_blank"
+                       rel="noopener noreferrer"
+                       >www.selvasavia.life</a
+                    >
+                    <br />
+                    <a
+                       style="color: white; text-decoration: none"
+                       href="https://blueprintransformation.com/"
+                       target="_blank"
+                       rel="noopener noreferrer"
+                       >blueprintransformation.com</a
+                    >
+                    | <span>Derechos Reservados Blue Print Transformation S.A.S. 2024 ®</span>
+                 </span>
+              </td>
+           </tr>
+        </table>
+     </div>
+   `;
       }      
       //console.log("emailBody: "+emailBody);
       await sendEmail(
