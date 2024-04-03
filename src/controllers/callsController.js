@@ -376,8 +376,11 @@ const updatePublicationById = async (req, res) => {
 
     // Construir ruta absoluta usando path.join
     const rutaAbsoluta = path.join("../uploads", nombreArchivo);
+    console.log("rutaAbsoluta: "+rutaAbsoluta);
 
-    const imagePath = "uploads/" + nombreArchivo;
+    const imagePath = "http://34.170.121.255/uploads/callId"+callId+ nombreArchivo;
+    console.log("imagePath: "+imagePath);
+
     const updated = await callModel.updatePublicationById({
       callId,
       publicationTitle,
