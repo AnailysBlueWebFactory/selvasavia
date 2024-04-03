@@ -19,7 +19,7 @@ const sendEmail = async (to, subject, body) => {
         from: "info@selvasavia.life", // Replace with your email address
         to: to,
         subject: subject,
-        htmlBody: body,
+        html: body,
       };
   
       await transporter.sendMail(mailOptions);
@@ -43,18 +43,13 @@ const contact = async (req, res) => {
   
     try {
         //const emailBody="nombre: "+name+"telefono: "+phone+" "+message;
-        const emailBody = `<html lang='en'>
-        <head>
-           <meta charset='UTF-8' />
-           <meta name='viewport' content='width=device-width, initial-scale=1.0' />
-           <title>Document</title>
-        </head>
+        const emailBody = `<html lang='en'>        
         <body>
-           <table style='max-width: 600px; width: 100%; margin: auto; background-color: white'>
+           <table style='max-width: 600px; width: 100%; margin: auto; >
               <tr>
                  <td>
                     <img
-                       src='img/header.webp'
+                       src='http://34.170.121.255/uploads/emailmarketing/header.webp'
                        alt='selva savia'
                        width='100%'
                        style='border-top-right-radius: 40px; border-top-left-radius: 40px'
@@ -62,25 +57,39 @@ const contact = async (req, res) => {
                  </td>
               </tr>
               <tr>
-                 <td style='text-align: center'><img src='img/logo.png' alt='selva savia' width='200' style='margin-top: 20px' /></td>
+                 <td style='text-align: center'><img src='http://34.170.121.255/uploads/emailmarketing/logo.png' alt='selva savia' width='200' style='margin-top: 20px' /></td>
               </tr>
-              <tr>
-                 <td style='text-align: center'><img src='img/felicidades.png' alt='selva savia' width='420' /></td>
-              </tr>
+              
               <tr>
                  <td style='text-align: center'>
                     <p style='font-size: 18px; color: grey'>
-                       Hemos recibido tu Mensaje
+                       Hemos recibido tú información 
                     </p>
                  </td>
-              </tr>             
+              </tr> 
+              <tr>
+                <td style="text-align: center; padding-top: 10px">
+                <p><strong>Nombre:</strong>`+name+` </p>
+                </td>
+             </tr>      
+             <tr>
+                <td style="text-align: center; padding-top: 10px">
+                <p><strong>email:</strong>`+email+` </p>
+                </td>
+             </tr> 
+             <tr>
+                <td style="text-align: center; padding-top: 10px">
+                <p> <strong>Mensaje</strong></p>
+                <p>`+message+` <strong></strong></p>
+                </td>
+             </tr>      
               <tr>
                  <td style='padding-top: 50px; text-align: center'>
                     <span
                        style='
                           border-bottom-right-radius: 40px;
                           border-bottom-left-radius: 40px;
-                          background-image: url("img/header.webp");
+                          background-image: url("http://34.170.121.255/uploads/emailmarketing/header.webp");
                           background-size: cover;
                           background-position: left;
                           display: block;

@@ -170,6 +170,8 @@ const updateStatusCallById = async (req, res) => {
         });
       }
     }
+    let emailBody = ``;
+
 
     if (status === "Approved" || status === "Rejected") {
      //console.log("status: " + status);
@@ -199,7 +201,129 @@ const updateStatusCallById = async (req, res) => {
       }
 
       let emailSubject = "Convocatoria Aprobada";
-      let emailBody = `Tu Convocatoria ha sido Aprobada`;
+      emailBody=`
+         <div style="background-color: #f9f9f9">
+            <table style="max-width: 600px; width: 100%; margin: auto; background-color: white">
+               <tr>
+                  <td>
+                     <img
+                        src="http://34.170.121.255/uploads/emailmarketing/header.webp"
+                        alt="selva savia"
+                        width="100%"
+                        style="border-top-right-radius: 40px; border-top-left-radius: 40px"
+                     />
+                  </td>
+               </tr>
+               <tbody style="padding-inline: 40px">
+                  <tr>
+                     <td style="text-align: center">
+                        <img src="http://34.170.121.255/uploads/emailmarketing/logo.png" alt="selva savia" width="200" style="margin-top: 20px" />
+                     </td>
+                  </tr>
+                  <tr>
+                     <td style="text-align: center"><img src="http://34.170.121.255/uploads/emailmarketing/felicidades.png" alt="selva savia" width="420" /></td>
+                  </tr>
+                  <tr>
+                     <td style="text-align: center">
+                        <p style="font-size: 18px; color: grey">
+                           Tu idea nos parece un valioso aporte <br />
+                           a nuestro entorno
+                        </p>
+                     </td>
+                  </tr>
+                  <tr>
+                     <td style="text-align: center">
+                        <p style="font-size: 18px; margin-top: 20px; line-height: 1.4">
+                           Para avanzar en el proceso de aprobación de la <br />
+                           publicación de la convocatoria de tu proyecto, <br />
+                           haz clic en el botón e ingresa tus datos de acceso:
+                        </p>
+                     </td>
+                  </tr>
+                  <tr>
+                     <td style="text-align: center">
+                        <a href="http://" target="_blank" rel="noopener noreferrer">
+                           <img src="http://34.170.121.255/uploads/emailmarketing/btnlinkcall.png" alt="link" width="200" />
+                        </a>
+                     </td>
+                  </tr>
+                  <tr>
+                     <td style="text-align: center; padding-top: 10px">
+                        <p>Usuario: <strong>`+emailrojectLeader.emailAddress+`</strong></p>
+                        <p>Contraseña: <strong>`+randomPassword+`</strong></p>
+                     </td>
+                  </tr>
+                  <tr>
+                     <td style="text-align: center; padding-top: 20px">
+                        <p style="font-size: 18px">Completa el formulario y continúa con tu proceso.</p>
+                     </td>
+                  </tr>
+                  <tr>
+                     <td style="text-align: center; padding-top: 20px">
+                        <p style="font-size: 18px; line-height: 1.4">
+                           Tu colaboración y participación en Selva Savia <br />
+                           son una valiosa contribución a nuestra comunidad.
+                        </p>
+                     </td>
+                  </tr>
+                  <tr>
+                     <td style="text-align: center; padding-top: 20px">
+                        <p style="font-size: 18px">Si tienes alguna pregunta no dudes en contactarnos.</p>
+                     </td>
+                  </tr>
+                  <tr>
+                     <td style="text-align: center; padding-top: 50px">
+                        <strong style="font-size: 18px">¡Gracias por formar parte de Selva Savia!</strong>
+                     </td>
+                  </tr>
+               </tbody>
+               <tr>
+                  <td style="padding-top: 50px; text-align: center">
+                     <span
+                        style="
+                           border-bottom-right-radius: 40px;
+                           border-bottom-left-radius: 40px;
+                           background-image: url('http://34.170.121.255/uploads/emailmarketing/header.webp');
+                           background-size: cover;
+                           background-position: left;
+                           display: block;
+                           font-size: 12px;
+                           padding: 30px;
+                           color: white;
+                        "
+                     >
+                        <a
+                           style="color: white; text-decoration: none"
+                           href="mailto:info@selvasavia.life"
+                           target="_blank"
+                           rel="noopener noreferrer"
+                           >info@selvasavia.life</a
+                        >
+                        |
+                        <a
+                           style="color: white; text-decoration: none"
+                           href="https://www.selvasavia.life/"
+                           target="_blank"
+                           rel="noopener noreferrer"
+                           >www.selvasavia.life</a
+                        >
+                        <br />
+                        <a
+                           style="color: white; text-decoration: none"
+                           href="https://blueprintransformation.com/"
+                           target="_blank"
+                           rel="noopener noreferrer"
+                           >blueprintransformation.com</a
+                        >
+                        | <span>Derechos Reservados de autor Blue Print Transformation S.A.S. 2024 ®</span>
+                     </span>
+                  </td>
+               </tr>
+            </table>
+         </div>
+   `;
+   console.log(emailrojectLeader.emailAddress);
+     //let emailBody = `Tu Convocatoria ha sido Aprobada`;
       if (status === "Rejected") {
         emailSubject = "Convocatoria Rechazadaaaa";
         emailBody = `Tu Convocatoria ha sido Rechazada :`+reason;
@@ -251,7 +375,7 @@ const sendEmail = async (to, subject, body) => {
       from: "info@selvasavia.life", // Replace with your email address
       to: to,
       subject: subject,
-      text: body,
+      html: body,
     };
 
     await transporter.sendMail(mailOptions);
