@@ -2,6 +2,7 @@
 const { log } = require("console");
 const callModel = require("../models/callsModel");
 const userModel = require("../models/userModel");
+const fs = require('fs');
 // Import nodemailer
 const nodemailer = require("nodemailer");
 const path = require("path");
@@ -373,13 +374,25 @@ const updatePublicationById = async (req, res) => {
     //const nombreArchivoAmigable = slugify(publicationImage.filename, { replacement: '_', lower: true });
     // Utilizar slugify para generar un nombre de archivo amigable
     const nombreArchivo = publicationImage.filename.replace(/\s+/g, "_");
+    const nombreArchivoNuevo= "callid_"+callId+nombreArchivo;
+
+    /*fs.rename(nombreArchivo, nombreArchivoNuevo, (err) => {
+      if (err) {
+        console.error('Error al cambiar el nombre del archivo:', err);
+        return;
+      }
+      console.log('El nombre del archivo se ha cambiado correctamente.');
+    });*/
 
     // Construir ruta absoluta usando path.join
     const rutaAbsoluta = path.join("../uploads", nombreArchivo);
     console.log("rutaAbsoluta: "+rutaAbsoluta);
 
-    const imagePath = "http://34.170.121.255/uploads/callId"+callId+ nombreArchivo;
+    const imagePath = "http://34.170.121.255/uploads/"+ nombreArchivo;
     console.log("imagePath: "+imagePath);
+
+    // Utiliza fs.rename para cambiar el nombre del archivo
+
 
     const updated = await callModel.updatePublicationById({
       callId,
