@@ -4,6 +4,7 @@ const dotenv = require("dotenv");
 const usersRoutes = require("./routes/usersRoutes");
 const callsRoutes = require("./routes/callsRoutes");
 const projectsRoutes = require("./routes/projectsRoutes");
+const contactRoutes = require("./routes/contactRoutes");
 
 dotenv.config();
 
@@ -18,6 +19,7 @@ app.use(express.json());
 app.use("/users", usersRoutes);
 app.use("/calls", callsRoutes);
 app.use("/projects", projectsRoutes);
+app.use("/contact", contactRoutes);
 
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
