@@ -99,7 +99,7 @@ const applicationProjectById = async (req, res) => {
     );
 
     let emailSubject = "Tienes un aplicante para tu proyecto";
-    let emailSubject = "";
+    //let emailSubject = "";
       emailBody=`
          <div style="background-color: #f9f9f9">
             <table style="max-width: 600px; width: 100%; margin: auto; background-color: white">
