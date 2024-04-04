@@ -32,9 +32,7 @@ const sendEmail = async (to, subject, body) => {
 
 // Controlador para manejar el endpoint /contactanos
 const contact = async (req, res) => {
-    const { name, phone, email, message } = req.body;
-
-  
+    const { name, phone, email, message } = req.body;  
     // Verificar si todos los campos requeridos están presentes
     if (!name || !phone || !email || !message) {
       return res.status(400).json({ error: 'Todos los campos son requeridos' });
@@ -69,11 +67,9 @@ const contact = async (req, res) => {
                 <br />
                 <p>${name} </p>
                 <p>${phone} </p>
-                <p style="line-height: 1.4;">${message} </p>
-                 
+                <p style="line-height: 1.4;">${message} </p>                 
               </td>
            </tr>
-
            <tr>
               <td style="text-align: center; padding-top: 20px">
                  <p style="font-size: 18px">
