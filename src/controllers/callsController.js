@@ -715,7 +715,6 @@ const applicationCallById = async (req, res) => {
     );
 
     let emailSubject = "";
-
       emailBody=`
          <div style="background-color: #f9f9f9">
             <table style="max-width: 600px; width: 100%; margin: auto; background-color: white">
@@ -739,7 +738,7 @@ const applicationCallById = async (req, res) => {
                      <td style="text-align: center;">
                         <p style="font-size: 18px"> Tienes un nuevo aplicante!<p/>
                         <p style="line-height: 1.4;  padding: 20px 40px"> Cada vez estas más cerca de iniciar tu proyecto en Selvasavia
-                        estos son los siguientes datos de contacto:<p/> 
+                        estos son los siguientes datos de contacto: <p/> 
                      </td>
                   </tr>
                   <tr>
@@ -808,7 +807,7 @@ const applicationCallById = async (req, res) => {
          </div>
    `;
 
-    console.log(emailBody);
+    //console.log(emailBody);
     // Replace 'call.emailCall' with the actual email address field from your call record
     await sendEmail(emailrojectLeader.emailAddress, emailSubject, emailBody);
 
@@ -831,21 +830,13 @@ const getAllCallSite = async (req, res) => {
     // Obtener los parámetros de paginación, estado y categoría de la solicitud
     const { page, limit, status, category } = req.body;
     console.log("getAllCallSite");
-    //console.log("page: " + page);
-    //console.log("limit: " + limit);
 
     let pageNumber = 0;
     let limitNumber = 0;
     let offset = 0;
     // Verificar si page y limit son números
     if (!isNaN(limit)) {
-      // Convertir a números enteros
-      //pageNumber = parseInt(page);
       limitNumber = parseInt(limit);
-
-      // Calcular el desplazamiento
-      //offset = (pageNumber - 1) * limitNumber;
-      //console.log("limitNumber: " + limitNumber);
     } else {
       console.error("Error: page o limit no son números válidos.");
     }
