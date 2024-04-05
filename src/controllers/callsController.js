@@ -2,6 +2,7 @@
 const { log } = require("console");
 const callModel = require("../models/callsModel");
 const userModel = require("../models/userModel");
+const multer = require("multer");
 const fs = require('fs');
 // Import nodemailer
 const nodemailer = require("nodemailer");
@@ -580,12 +581,13 @@ const insertCallDetails = async (req, res) => {
 };
 
 // Función para actualizar la publicación de una convocatoria
-const updatePublicationById = async (req, res) => {
+const createPublicationById = async (req, res) => {
   //console.log("req.body: "+req.body);
   try {
     const { callId, publicationTitle, publicationDetail, category } = req.body;
     const publicationImage = req.file ? req.file : null;
 
+    console.log("publicationImage: "+publicationImage);
     console.log("updatePublicationById");
 
     // Verifica si todos los parámetros necesarios están definidos
@@ -598,7 +600,92 @@ const updatePublicationById = async (req, res) => {
       return res.status(400).json({
         status: "error",
         message:
-          "Se requieren los campos callId, publicationTitle, publicationDetail y publicationImage",
+          "Se requieren los campos callId, publicationTitle, publicationDetail ",
+        code: 400,
+      });
+    }
+    // Utilizar slugify para generar un nombre de archivo amigable
+    //const nombreArchivoAmigable = slugify(publicationImage.filename, { replacement: '_', lower: true });
+    // Utilizar slugify para generar un nombre de archivo amigable
+    const nombreArchivo = publicationImage.filename.replace(/\s+/g, "_");
+    const nombreArchivoNuevo= "callid_"+callId+nombreArchivo;
+
+    /*fs.rename(nombreArchivo, nombreArchivoNuevo, (err) => {
+      if (err) {
+        console.error('Error al cambiar el nombre del archivo:', err);
+        return;
+      }
+      console.log('El nombre del archivo se ha cambiado correctamente.');
+    });*/
+
+    // Construir ruta absoluta usando path.join
+    const rutaAbsoluta = path.join("../uploads", nombreArchivo);
+    console.log("rutaAbsoluta: "+rutaAbsoluta);
+
+    const imagePath = "https://api.selvasavia.life/uploads/"+ nombreArchivo;
+    console.log("imagePath: "+imagePath);
+
+    // Utiliza fs.rename para cambiar el nombre del archivo
+
+
+    const updated = await callModel.updatePublicationById({
+      callId,
+      publicationTitle,
+      publicationDetail,
+      category,
+      imagePath,
+    });
+
+    if (updated) {
+      const nameProjectLeader = await userModel.getDataUserProjectLeader(
+        callId,
+        "challengeLeaderName"
+      );
+      const emailrojectLeader = await userModel.getDataUserProjectLeader(
+        callId,
+        "emailAddress"
+      );
+
+      let emailSubject = "Convocatoria Publicada";
+      let emailBody = `Tu Convocatoria ha sido Publicada`;
+      // Replace 'call.emailCall' with the actual email address field from your call record
+      await sendEmail(emailrojectLeader.emailAddress, emailSubject, emailBody);
+
+      res.status(200).json({
+        status: "success",
+        message:
+          "La publicación de la convocatoria ha sido creada exitosamente.",
+        code: 200,
+        endpoint: "/calls/updatePublicationById",
+      });
+    } else {
+      res.status(404).json({ message: "Convocatoria no encontrada" });
+    }
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+// Función para actualizar la publicación de una convocatoria
+const updatePublicationById = async (req, res) => {
+  //console.log("req.body: "+req.body);
+  try {
+    const { callId, publicationTitle, publicationDetail, category } = req.body;
+    const publicationImage = req.file ? req.file : null;
+    console.log("publicationImage: "+publicationImage);
+    console.log("updatePublicationById");
+
+    // Verifica si todos los parámetros necesarios están definidos
+    if (
+      !callId ||
+      !publicationTitle ||
+      !publicationDetail ||
+      !category
+    ) {
+      return res.status(400).json({
+        status: "error",
+        message:
+          "Se requieren los campos callId, publicationTitle, publicationDetail ",
         code: 400,
       });
     }
@@ -713,8 +800,9 @@ const applicationCallById = async (req, res) => {
       "emailAddress"
     );
 
-    let emailSubject = "";
-      emailBody=`
+    let emailSubject = "Tienes un nuevo aplicante!";
+
+    let emailBody=`
          <div style="background-color: #f9f9f9">
             <table style="max-width: 600px; width: 100%; margin: auto; background-color: white">
                <tr>
@@ -733,11 +821,11 @@ const applicationCallById = async (req, res) => {
                         <img src="https://api.selvasavia.life/uploads/emailmarketing/logo.png" alt="selva savia" width="200" style="margin-top: 20px" />
                      </td>
                   </tr>            
-                  <tr 
-                     <td style="text-align: center;">
-                        <p style="font-size: 18px"> Tienes un nuevo aplicante!<p/>
-                        <p style="line-height: 1.4;  padding: 20px 40px"> Cada vez estas más cerca de iniciar tu proyecto en Selvasavia
-                        estos son los siguientes datos de contacto: <p/> 
+                  <tr> 
+                     <td style="text-align: center; padding-top: 20px ">
+                        <p style="font-size: 18px"><strong> Tienes un nuevo aplicante!</strong></p>
+                        <p style="line-height: 1.4;  padding: 10px 40px"> Cada vez estas más cerca de iniciar tu proyecto en Selvasavia <br/>
+                        estos son los siguientes datos de contacto: </p> 
                      </td>
                   </tr>
                   <tr>
@@ -915,6 +1003,7 @@ module.exports = {
   sendEmail,
   getCallsGroupedByStatus,
   insertCallDetails,
+  createPublicationById,
   updatePublicationById,
   applicationCallById,
   getAllCallSite,

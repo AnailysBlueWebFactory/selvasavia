@@ -39,9 +39,15 @@ router.post(
 );
 // Ruta para crear una nueva publicación de convocatoria
 router.post(
-  "/updatePublicationById",
+  "/createPublicationById",
   authenticateToken,
   upload.single("publicationImage"),
+  callsController.createPublicationById
+);
+// Ruta para crear una nueva publicación de convocatoria
+router.post(
+  "/updatePublicationById",
+  authenticateToken,
   callsController.updatePublicationById
 );
 // Ruta para aplicar a convocatoria por id

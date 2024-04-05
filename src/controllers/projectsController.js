@@ -100,7 +100,7 @@ const applicationProjectById = async (req, res) => {
 
     let emailSubject = "Tienes un aplicante para tu proyecto";
     //let emailSubject = "";
-      emailBody=`
+    let emailBody=`
          <div style="background-color: #f9f9f9">
             <table style="max-width: 600px; width: 100%; margin: auto; background-color: white">
                <tr>
@@ -119,9 +119,9 @@ const applicationProjectById = async (req, res) => {
                         <img src="https://api.selvasavia.life/uploads/emailmarketing/logo.png" alt="selva savia" width="200" style="margin-top: 20px" />
                      </td>
                   </tr>            
-                  <tr 
-                     <td style="text-align: center;">
-                        <p style="font-size: 18px"> Tienes un nuevo aplicante!<p/>
+                  <tr >
+                  <td style="text-align: center; padding-top: 20px ">
+                  <p style="font-size: 18px"><strong> Tienes un nuevo aplicante!</strong></p>
                         <p style="line-height: 1.4;  padding: 20px 40px">Estos son los siguientes datos de contacto: <p/> 
                      </td>
                   </tr>
