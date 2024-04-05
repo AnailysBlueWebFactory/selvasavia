@@ -243,7 +243,7 @@ const updateStatusCallById = async (req, res) => {
                   </tr>
                   <tr>
                      <td style="text-align: center">
-                        <a href="http://" target="_blank" rel="noopener noreferrer">
+                        <a href="https://admin.selvasavia.life/" target="_blank" rel="noopener noreferrer">
                            <img src="https://api.selvasavia.life/uploads/emailmarketing/btnlinkcall.png" alt="link" width="200" />
                         </a>
                      </td>
