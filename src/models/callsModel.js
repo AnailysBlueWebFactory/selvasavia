@@ -34,7 +34,7 @@ const createCall = async (callData) => {
 
   // Asegúrate de que estas variables coincidan con los campos en tu base de datos
   const query =
-    "INSERT INTO calls  (ChallengeName, ChallengeLeaderName, InstitutionOrganization, ActorType, EmailAddress, PhoneNumber, ContextDescription, SpecificProblemDescription, ChallengeFormula, RequiredResources, InvitedParticipants, InformationSources, Observations, statusCall) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'New')";
+    "INSERT INTO calls  (publicationImage, ChallengeName, ChallengeLeaderName, InstitutionOrganization, ActorType, EmailAddress, PhoneNumber, ContextDescription, SpecificProblemDescription, ChallengeFormula, RequiredResources, InvitedParticipants, InformationSources, Observations, statusCall) VALUES ('https://api.selvasavia.life/uploads/logo.png',?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'New')";
   const values = [
     challengeCallName,
     challengeLeaderCallName,
