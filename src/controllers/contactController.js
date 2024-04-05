@@ -46,7 +46,7 @@ const contact = async (req, res) => {
            <tr>
               <td>
                  <img
-                    src="http://34.170.121.255/uploads/emailmarketing/header.webp"
+                    src="https://api.selvasavia.life/uploads/emailmarketing/header.webp"
                     alt="selva savia"
                     width="100%"
                     style="border-top-right-radius: 40px; border-top-left-radius: 40px"
@@ -56,7 +56,7 @@ const contact = async (req, res) => {
            <tbody style="padding-inline: 40px">
            <tr>
               <td style="text-align: center">
-                 <img src="http://34.170.121.255/uploads/emailmarketing/logo.png" alt="selva savia" width="200" style="margin-top: 20px" />
+                 <img src="https://api.selvasavia.life/uploads/emailmarketing/logo.png" alt="selva savia" width="200" style="margin-top: 20px" />
               </td>
            </tr>
            <tr>
@@ -85,7 +85,7 @@ const contact = async (req, res) => {
                     style="
                        border-bottom-right-radius: 40px;
                        border-bottom-left-radius: 40px;
-                       background-image: url('http://34.170.121.255/uploads/emailmarketing/header.webp');
+                       background-image: url('https://api.selvasavia.life/uploads/emailmarketing/header.webp');
                        background-size: cover;
                        background-position: left;
                        display: block;
