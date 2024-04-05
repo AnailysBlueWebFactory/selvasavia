@@ -197,7 +197,7 @@ const updatePublicationById = async (data) => {
 
     const query = `
       UPDATE calls 
-      SET PublicationTitle = ?, PublicationDetail = ?, category = ?, StatusCall='Open'
+      SET PublicationTitle = ?, PublicationDetail = ?, PublicationImage = ?, category = ?, StatusCall='Open'
       WHERE CallId = ?;
     `;
 

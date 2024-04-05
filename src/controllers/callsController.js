@@ -593,7 +593,6 @@ const updatePublicationById = async (req, res) => {
       !callId ||
       !publicationTitle ||
       !publicationDetail ||
-      !publicationImage ||
       !category
     ) {
       return res.status(400).json({
